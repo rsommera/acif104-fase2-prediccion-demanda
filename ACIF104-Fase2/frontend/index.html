@@ -1,0 +1,27 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Predicción de Demanda Retail</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Predicción de Demanda</h1>
+    <p>Ingrese los valores de las características numéricas usadas por el modelo.</p>
+
+    <form id="predict-form">
+        <div id="features-container">
+            <!-- Aquí puedes agregar inputs manualmente, por ahora uno de ejemplo -->
+            <div class="field">
+                <label>Feature 1 (ejemplo):</label>
+                <input type="number" step="any" name="feature_1" />
+            </div>
+        </div>
+
+        <button type="submit">Predecir</button>
+    </form>
+
+    <div id="resultado"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
