@@ -9,3 +9,8 @@ uvicorn
 joblib
 shap
 python-multipart
+xgboost
+imbalanced-learn
+scipy
+scikit-learn-extra
+pyyaml

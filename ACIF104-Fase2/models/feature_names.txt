@@ -1,0 +1,5 @@
+Product_id
+Open
+Promo
+SchoolHoliday
+Petrol_price

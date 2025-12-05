@@ -1,27 +1,253 @@
+<!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <title>Predicción de Demanda Retail</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predicción Demanda Retail - AI Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/styles.css" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js for dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-    <h1>Predicción de Demanda</h1>
-    <p>Ingrese los valores de las características numéricas usadas por el modelo.</p>
 
-    <form id="predict-form">
-        <div id="features-container">
-            <!-- Aquí puedes agregar inputs manualmente, por ahora uno de ejemplo -->
-            <div class="field">
-                <label>Feature 1 (ejemplo):</label>
-                <input type="number" step="any" name="feature_1" />
+<body class="bg-light">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="fas fa-brain me-2"></i>AI Demand Predictor</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#"
+                            data-target="predict-section">Predicción</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-target="metrics-section">Métricas y
+                            Comparación</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-target="explain-section">Explicabilidad
+                            (SHAP)</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-target="health-section">Salud del Sistema</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <!-- Predict Section -->
+        <div id="predict-section" class="section-content">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0"><i class="fas fa-sliders-h me-2"></i>Configuración</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="predict-form">
+                                <div class="mb-3">
+                                    <label class="form-label">Modelo</label>
+                                    <select id="model-select" class="form-select">
+                                        <option selected disabled>Cargando modelos...</option>
+                                    </select>
+                                </div>
+                                <hr>
+                                <h6>Features</h6>
+                                <div id="features-container">
+                                    <p class="text-muted small">Cargando features...</p>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 mt-3">
+                                    <i class="fas fa-rocket me-2"></i>Predecir
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Resultado</h5>
+                        </div>
+                        <div class="card-body text-center d-flex flex-column justify-content-center align-items-center"
+                            id="result-area">
+                            <div class="text-muted">
+                                <i class="fas fa-arrow-left me-2"></i>Selecciona un modelo e ingresa datos para
+                                predecir.
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <button type="submit">Predecir</button>
-    </form>
+        <!-- Metrics Section -->
+        <div id="metrics-section" class="section-content d-none">
+            <h3 class="mb-4">Comparación de Modelos</h3>
 
-    <div id="resultado"></div>
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">Machine Learning (Clásico)</div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="ml-metrics-table">
+                            <thead>
+                                <tr>
+                                    <th>Modelo</th>
+                                    <th>MSE</th>
+                                    <th>RMSE</th>
+                                    <th>MAE</th>
+                                    <th>R²</th>
+                                    <th>MAPE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="6" class="text-center">Cargando...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-    <script src="app.js"></script>
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">Deep Learning (Secuencial)</div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="dl-metrics-table">
+                            <thead>
+                                <tr>
+                                    <th>Modelo</th>
+                                    <th>MSE</th>
+                                    <th>RMSE</th>
+                                    <th>MAE</th>
+                                    <th>R²</th>
+                                    <th>MAPE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="6" class="text-center">Cargando...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">Clustering</div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="clustering-metrics-table">
+                            <thead>
+                                <tr>
+                                    <th>K</th>
+                                    <th>Inertia</th>
+                                    <th>Silhouette</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="3" class="text-center">Cargando...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Images Gallery for Clustering -->
+                    <div class="row mt-3" id="clustering-plots">
+                        <!-- Loaded dynamically or static links to /plots/ -->
+                        <div class="col-md-6"><img src="/plots/clustering_elbow.png"
+                                class="img-fluid rounded border mb-2" alt="Elbow"></div>
+                        <div class="col-md-6"><img src="/plots/clustering_silhouette.png"
+                                class="img-fluid rounded border mb-2" alt="Silhouette"></div>
+                        <div class="col-md-6"><img src="/plots/clustering_kmeans_pca.png"
+                                class="img-fluid rounded border mb-2" alt="KMeans PCA"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5>Convergencia de Entrenamiento (DL)</h5>
+                            <img src="/plots/convergence_plot.png" class="img-fluid rounded mx-auto d-block"
+                                alt="Convergence Plot">
+                            <h5 class="mt-4">Comparativa RMSE</h5>
+                            <img src="/plots/model_comparison_rmse.png" class="img-fluid rounded mx-auto d-block"
+                                alt="RMSE Comparison">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Explain Section -->
+        <div id="explain-section" class="section-content d-none">
+            <h3 class="mb-4">Explicabilidad del Modelo (SHAP)</h3>
+            <p class="text-muted">Análisis de importancia de características para el mejor modelo (XGBoost/SVR).</p>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header">Summary Plot</div>
+                        <div class="card-body text-center">
+                            <img src="/plots/shap_summary.png" class="img-fluid" alt="SHAP Summary">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header">Importance Bar Plot</div>
+                        <div class="card-body text-center">
+                            <img src="/plots/shap_bar.png" class="img-fluid" alt="SHAP Bar">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header">Dependence Plot (Top Feature)</div>
+                        <div class="card-body text-center">
+                            <img src="/plots/shap_dependence.png" class="img-fluid" alt="SHAP Dependence">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Section -->
+        <div id="health-section" class="section-content d-none">
+            <h3 class="mb-4">Estado del Sistema</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card bg-success text-white mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">API Status</h5>
+                            <p class="card-text display-6" id="api-status">OK</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Logs Recientes</h5>
+                            <pre id="logs-preview" class="bg-dark text-light p-3 rounded"
+                                style="max-height: 200px; overflow-y: scroll;">Cargando logs...</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/static/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

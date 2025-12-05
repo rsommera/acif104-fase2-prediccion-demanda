@@ -1,0 +1,23 @@
+
+app:
+  title: "API Predicción de Demanda Retail"
+  version: "2.0.0"
+  description: "API Avanzada con ML, DL y SHAP."
+  host: "0.0.0.0"
+  port: 8000
+
+paths:
+  data: "data/Retail_Dataset2.csv"
+  models: "models"
+  logs: "logs/app.log"
+  plots: "plots"
+
+models:
+  default: "xgboost_model.pkl"
+  available:
+    - "xgboost_model.pkl"
+    - "knn_model.pkl"
+    - "svr_model.pkl"
+    - "lstm_model.h5"
+    - "gru_model.h5"
+    - "transformer_model.h5"
