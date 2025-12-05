@@ -128,7 +128,3 @@ Aunque se inician juntos por conveniencia, los componentes están desacoplados a
     uvicorn src.api:app --reload
     ```
 
-*   **Para desarrollar/modificar el Frontend:**
-    1.  Editar archivos en `frontend/` (`index.html`, `app.js`, `styles.css`).
-    2.  Refrescar el navegador (http://localhost:8000).
-    *Nota: Si se deseara desplegar el frontend por separado (ej. en S3 o Netlify), se debería modificar `app.js` para apuntar a la URL absoluta del API en lugar de rutas relativas.*
